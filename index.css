@@ -5,16 +5,9 @@ body {
 	
 	/*background-color: blue; set background to blue so that it is visible for testing*/
 } 
-
-#input_text{
-	width: 99vw;
-	/*height: 5vh;*/
-}
-
-svg{
-	width: 99vw;
-	height: 95vh;
+#root {
+	width: 100%;
+	height: 100%;
 	margin: 0;
-	background-color: yellow;
 }
 
