@@ -2,6 +2,7 @@ var CLAUSE_CLASS="clause_group";
 var CLAUSE_ID=0;
 
 var DRAGGABLE_GROUP_CLASS="draggable_group";
+var TEXT_AREA_CLASS="text_area";
 
 var OPTIONS_CLASS="clause_options";
 
@@ -63,6 +64,7 @@ function CreateDraggable(main_group){
 }
 function CreateTextArea(draggable){
 	return draggable.append("rect")
+		.attr("class",TEXT_AREA_CLASS)
 		.attr("height",TEXTAREA_HEIGHT)
 		.attr("width",TEXTAREA_WIDTH)
 		.style("fill","black");
@@ -85,4 +87,5 @@ function CreateClause(clause){
 	let draggable = CreateDraggable(main);
 	let textArea = CreateTextArea(draggable);
 	let options = CreateOptions(main,clause.id);
+	Set_Clause_True(main,clause);
 }
