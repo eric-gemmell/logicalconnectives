@@ -16,14 +16,14 @@ function GetClauseById(clauseId){
 }
 function Draggable_Click(main_group){
 	LinkClauseClick(main_group);
-	if(main_group.attr("clicked") === "true"){
-		main_group.attr("clicked","false");
-		Clause_Hide_Options(main_group);		
-	}
-	else{
-		main_group.attr("clicked","true");
-		Clause_Show_Options(main_group);
-	}
+	//if(main_group.attr("clicked") === "true"){
+	//	main_group.attr("clicked","false");
+	//	Clause_Hide_Options(main_group);		
+	//}
+	//else{
+	//	main_group.attr("clicked","true");
+	//	Clause_Show_Options(main_group);
+	//}
 }
 function Clause_Drag_Start(main_group){
 	let currentPos = GetGroupLocation(main_group);
@@ -101,6 +101,6 @@ function CreateClause(clause){
 		.attr("transform",GroupLocation(clause.pos.x,clause.pos.y));
 	let draggable = CreateDraggable(main);
 	let textArea = CreateTextArea(draggable);
-	let options = CreateOptions(main,clause.id);
+	//let options = CreateOptions(main,clause.id);
 	Set_Clause_True(main,clause);
 }
