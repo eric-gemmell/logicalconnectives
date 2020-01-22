@@ -102,7 +102,9 @@ function SetImplicationLinkPath(link){
 	var dp = link.clauses[1].pos;
 	var new_d = [{"x": sp.x+205,"y": sp.y+20},
 	    {"x":dp.x+100,"y":sp.y+20},
-	    {"x":dp.x+100,"y":dp.y}
+	    {"x":dp.x+100,"y":dp.y},
+	    {"x":dp.x+110,"y":dp.y},
+	    {"x":dp.x+90,"y":dp.y}
 	];
 	var line_function = d3.line()
 		.x(function(d) { return d.x; })
@@ -114,7 +116,9 @@ function SetContradictionLinkPath(link){
 	var dp = link.clauses[1].pos;
 	var new_d = [{"x": sp.x+205,"y": sp.y+20},
 	    {"x":dp.x+100,"y":sp.y+20},
-	    {"x":dp.x+100,"y":dp.y}
+	    {"x":dp.x+100,"y":dp.y},
+	    {"x":dp.x+110,"y":dp.y},
+	    {"x":dp.x+90,"y":dp.y}
 	];
 	var line_function = d3.line()
 		.x(function(d) { return d.x; })

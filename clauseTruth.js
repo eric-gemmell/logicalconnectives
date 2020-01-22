@@ -1,22 +1,24 @@
 function Set_False_Click(main_group){
 	console.log("Setting clause false!");
+	console.log(LINKS);
+	console.log(CLAUSES);
 	let clause = GetClauseById(main_group.attr("id"));
-	if(clause.links.length > 1){
-		console.log("Clauses that are not axiums cannot be set, only axiums can be set to true or false!");
-	}
-	else{
-		Set_Clause_False(main_group,clause);
-	}
+//	if(clause.links.length > 1){
+//		console.log("Clauses that are not axiums cannot be set, only axiums can be set to true or false!");
+//	}
+//	else{
+	Set_Clause_False(main_group,clause);
+//	}
 }
 function Set_True_Click(main_group){
 	console.log("Setting Clause true!");
 	let clause = GetClauseById(main_group.attr("id"));
-	if(clause.links.length > 1){
-		console.log("Clauses that are not axiums cannot be set, only axiums can be set to true or false!");
-	}
-	else{
-		Set_Clause_True(main_group,clause);
-	}
+//	if(clause.links.length > 1){
+//		console.log("Clauses that are not axiums cannot be set, only axiums can be set to true or false!");
+//	}
+//	else{
+	Set_Clause_True(main_group,clause);
+//	}
 }
 
 function Set_Clause_False(main_group,clause){
@@ -35,6 +37,14 @@ function Set_Clause_False(main_group,clause){
 		}        
         }
         else if(link.type === CONTRADICTION_LINK_TYPE){
+		console.log("contradiction");
+		console.log(link);
+        	if(main_group.attr("id") === link.clauses[0].id){
+			console.log("has children!");
+			let childClause = GetClauseById(link.clauses[1].id);
+			let childMainGroup = d3.select("#"+childClause.id);
+			Set_Clause_True(childMainGroup,childClause);
+		}        
         }
         else{
         }

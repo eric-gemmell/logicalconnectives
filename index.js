@@ -8,7 +8,7 @@ CreateClauseInput(ROOT);
 let SVG = ROOT.append("div")
 	.attr("id","SVG_container")
 	.style("width","100%")
-	.style("height","95%")
+	.style("height","1000px")
 	.append("svg")
 	.style("width","100%")
 	.style("height","95vh")

@@ -63,11 +63,26 @@ function CreateDraggable(main_group){
 		.call(drag_handler);
 }
 function CreateTextArea(draggable){
-	return draggable.append("rect")
+	
+	let text = draggable.append("rect")
 		.attr("class",TEXT_AREA_CLASS)
 		.attr("height",TEXTAREA_HEIGHT)
 		.attr("width",TEXTAREA_WIDTH)
 		.style("fill","black");
+
+	draggable.append("foreignObject")
+		.attr("width",205)
+		.attr("height",100)
+		.append("xhtml:div")
+		.attr("xmlns","http://www.w3.org/1999/xhtml")
+		.append("xhtml:textarea")
+		.text("Yeah Clause time")
+		.style("height", "100")//also fix this boy pls
+		.style("width", "200px")//this one too
+		.style("resize", "none")//maybe as well
+		.style("background-color","white");
+
+	return text;
 }
 function CheckClauseValues(clause){
 	clause.id = CLAUSE_CLASS+(CLAUSE_ID++);
