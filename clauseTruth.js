@@ -1,28 +1,18 @@
 function Set_False_Click(main_group){
-	console.log("Setting clause false!");
-	console.log(LINKS);
-	console.log(CLAUSES);
 	let clause = GetClauseById(main_group.attr("id"));
-//	if(clause.links.length > 1){
-//		console.log("Clauses that are not axiums cannot be set, only axiums can be set to true or false!");
-//	}
-//	else{
 	Set_Clause_False(main_group,clause);
-//	}
 }
 function Set_True_Click(main_group){
-	console.log("Setting Clause true!");
 	let clause = GetClauseById(main_group.attr("id"));
-//	if(clause.links.length > 1){
-//		console.log("Clauses that are not axiums cannot be set, only axiums can be set to true or false!");
-//	}
-//	else{
 	Set_Clause_True(main_group,clause);
-//	}
 }
 
 function Set_Clause_False(main_group){
 	//perform checks here for okayness of switch to true
+	let clause = GetClauseById(main_group.attr("id"));
+	clause.truth = false;
+	main_group.attr("truth","false");
+	SetClauseAppearance(main_group,false);
 //	clausemain_group
 //	main_group.attr("truth","true")
 //	SetClauseAppearance(main_group,false);
@@ -53,7 +43,10 @@ function Set_Clause_False(main_group){
 //	}
 //	});
 }
-function Set_Clause_True(main_group,clause){
+function Set_Clause_True(main_group){
+	let clause = GetClauseById(main_group.attr("id"));
+	clause.truth = true;
+	main_group.attr("truth","true");
 	SetClauseAppearance(main_group,true);
 }
 

@@ -23,15 +23,10 @@ function Draggable_Click(main_group){
 	if(MODE == SET_CLAUSE_FALSE_MODE){
 		Set_False_Click(main_group);
 	}
+	else if(MODE == SET_CLAUSE_TRUE_MODE){
+		Set_True_Click(main_group);
+	}
 	//LinkClauseClick(main_group);
-	//if(main_group.attr("clicked") === "true"){
-	//	main_group.attr("clicked","false");
-	//	Clause_Hide_Options(main_group);		
-	//}
-	//else{
-	//	main_group.attr("clicked","true");
-	//	Clause_Show_Options(main_group);
-	//}
 }
 function Clause_Drag_Start(main_group){
 	let currentPos = GetGroupLocation(main_group);

@@ -38,7 +38,7 @@ function CreateClauseInput(root){
 		.style("font-size","30px")
 		.style("padding", "0px 0px")
 		.style("border", "0px")
-		.on("click",function(){});
+		.on("click",function(){EquivButtonClicked()});
 		
 	buttons.oppos = topBar.append("button")
 		.attr("id",buttonIDs.oppos)
@@ -48,7 +48,7 @@ function CreateClauseInput(root){
 		.style("font-size","30px")
 		.style("padding", "0px 0px")
 		.style("border", "0px")
-		.on("click",function(){});
+		.on("click",function(){OpposButtonClicked()});
 
 	buttons.and = topBar.append("button")
 		.attr("id",buttonIDs.and)
@@ -58,7 +58,7 @@ function CreateClauseInput(root){
 		.style("font-size","30px")
 		.style("padding", "0px 0px")
 		.style("border", "0px")
-		.on("click",function(){});
+		.on("click",function(){AndButtonClicked()});
 	
 	buttons.setFalse = topBar.append("button")
 		.attr("id",buttonIDs.setFalse)
@@ -81,6 +81,33 @@ function CreateClauseInput(root){
 		.style("border", "0px")
 		.style("float","right")
 		.on("click",function(){TrueButtonClicked()});
+}
+
+function EquivButtonClicked(){
+	if(MODE == CREATE_EQUIVALENCE_RELATIONS_MODE){
+		setMode(DRAGGABLE_MODE);
+	}
+	else{
+		setMode(CREATE_EQUIVALENCE_RELATIONS_MODE);
+	}
+}
+
+function OpposButtonClicked(){	
+	if(MODE == CREATE_OPPOSITE_RELATIONS_MODE){
+		setMode(DRAGGABLE_MODE);
+	}
+	else{
+		setMode(CREATE_OPPOSITE_RELATIONS_MODE);
+	}
+}
+
+function AndButtonClicked(){
+	if(MODE == CREATE_AND_RELATIONS_MODE){
+		setMode(DRAGGABLE_MODE);
+	}
+	else{
+		setMode(CREATE_AND_RELATIONS_MODE);
+	}
 }
 
 function FalseButtonClicked(){
@@ -110,6 +137,15 @@ function ColourSelectedButton(){
 	}
 	else if(MODE == SET_CLAUSE_TRUE_MODE){
 		buttons.setTrue.style("background-color","steelblue");
+	}
+	else if(MODE == CREATE_EQUIVALENCE_RELATIONS_MODE){
+		buttons.equiv.style("background-color","steelblue");
+	}
+	else if(MODE == CREATE_OPPOSITE_RELATIONS_MODE){
+		buttons.oppos.style("background-color","steelblue");
+	}
+	else if(MODE == CREATE_AND_RELATIONS_MODE){
+		buttons.and.style("background-color","steelblue");
 	}
 }
 
