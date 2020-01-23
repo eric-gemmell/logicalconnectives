@@ -7,7 +7,11 @@ let SET_CLAUSE_TRUE_MODE = "set clause true";
 
 var MODE = DRAGGABLE_MODE;
 
+function ErasePreviousMode(){
+	clickedClauses = [];
+}
 function setMode(newMode){
+	ErasePreviousMode();
 	MODE = newMode;
 	console.log("NEW MODE", MODE);
 	ColourSelectedButton();

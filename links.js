@@ -10,15 +10,27 @@ function GetLinkById(linkId){
 	return LINKS.filter(link => link.id === linkId)[0];
 }
 
-var linkType;
 var creatingLink = false;
+var linkType = "";
 var clickedClauses;
 var requiredClauses;
 function Implication_Click(main_group){
-	creatingLink = true;
-	linkType = IMPLICATION_LINK_TYPE;
-	clickedClauses = [main_group.attr("id")];
-	requiredClauses = 1;
+	let id = main_group.attr("id");	
+	let index = clickedClauses.indexOf(id);
+	if (index > -1) {
+		clickedClauses.splice(index, 1);
+	}
+	else{
+		clickedClauses.push(main_group.attr("id"));
+	}
+	console.log("clicked Clauses: ",clickedClauses);
+	if(clickedClauses.length == 1){
+		//DrawInitialEquivalenceLink(clickedClauses);
+	}
+	else if(clickedClauses.length == 2){
+		CreateLink(IMPLICATION_LINK_TYPE, clickedClauses);
+		clickedClauses = [];
+	}
 }
 function Contradiction_Click(main_group){
 	creatingLink = true;
@@ -71,7 +83,7 @@ function CreateLinkObject(link){
                 .style("fill","none")
                 .style("stroke-width","3");
 	if(link.type === IMPLICATION_LINK_TYPE){
-		link.object.style("stroke","green");
+		link.object.style("stroke","steelblue");
 	}
 	else if(link.type === CONTRADICTION_LINK_TYPE){
 		link.object.style("stroke","red");
@@ -98,18 +110,25 @@ function SetLinkPath(link){
 	}
 }
 function SetImplicationLinkPath(link){	
-	var sp = link.clauses[0].pos;
-	var dp = link.clauses[1].pos;
-	var new_d = [{"x": sp.x+205,"y": sp.y+20},
-	    {"x":dp.x+100,"y":sp.y+20},
-	    {"x":dp.x+100,"y":dp.y},
-	    {"x":dp.x+110,"y":dp.y},
-	    {"x":dp.x+90,"y":dp.y}
-	];
+	let sp = link.clauses[0].pos;
+	let ep = link.clauses[1].pos;
+	let path = [];
+	if(sp.y < ep.y - 110){ 
+		path = [{"x": sp.x+100,"y": sp.y+106},
+		    {"x":sp.x+100,"y":Math.max(sp.y+110,(ep.y+sp.y)/2)},
+		    {"x":ep.x+100,"y":Math.max(sp.y+110,(ep.y+sp.y)/2)},
+		    {"x":ep.x+100,"y":ep.y},
+		    {"x":ep.x+110,"y":ep.y},
+		    {"x":ep.x+90,"y":ep.y}
+		];
+	}
+	else{
+	
+	}
 	var line_function = d3.line()
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
-	link.object.attr("d",line_function(new_d));
+	link.object.attr("d",line_function(path));
 }
 function SetContradictionLinkPath(link){	
 	var sp = link.clauses[0].pos;

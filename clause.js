@@ -26,6 +26,9 @@ function Draggable_Click(main_group){
 	else if(MODE == SET_CLAUSE_TRUE_MODE){
 		Set_True_Click(main_group);
 	}
+	else if(MODE == CREATE_EQUIVALENCE_RELATIONS_MODE){
+		Implication_Click(main_group);
+	}
 	//LinkClauseClick(main_group);
 }
 function Clause_Drag_Start(main_group){
