@@ -10,8 +10,8 @@ let buttons = {};
 function AddEventListener(){
 	$("#add_clause_text").keyup(function(event) {
 		if (event.keyCode === 13) {
-			var text = $("#input_text").val();
-			$("#input_text").val("");
+			var text = $("#add_clause_text").val();
+			$("#add_clause_text").val("");
 			var clause = {"id" : 0,"text": text,"pos":{"x":20,"y":30},"links":[]};
 			CreateClause(clause);
 		}
