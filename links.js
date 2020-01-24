@@ -21,43 +21,46 @@ function Implication_Click(main_group){
 		clickedClauses.splice(index, 1);
 	}
 	else{
-		clickedClauses.push(main_group.attr("id"));
+		clickedClauses.push(id);
 	}
 	console.log("clicked Clauses: ",clickedClauses);
 	if(clickedClauses.length == 1){
-		//DrawInitialEquivalenceLink(clickedClauses);
+		DrawInitialEquivalenceLink(clickedClauses);
 	}
 	else if(clickedClauses.length == 2){
 		CreateLink(IMPLICATION_LINK_TYPE, clickedClauses);
 		clickedClauses = [];
 	}
 }
-function Contradiction_Click(main_group){
-	creatingLink = true;
-	linkType = CONTRADICTION_LINK_TYPE;
-	clickedClauses = [main_group.attr("id")];
-	requiredClauses = 1;
-}
-function Addition_Click(main_group){
-	creatingLink = true;
-	linkType = ADDITION_LINK_TYPE;
-	clickedClauses = [main_group.attr("id")];
-	requiredClauses = 2;
-}
-function LinkClauseClick(main_group){
-	if(creatingLink){
-		clickedClauses.push(main_group.attr("id"));
-		requiredClauses += -1;
-		if(requiredClauses < 1){
-			creatingLink = false;
-			if(CheckLinkValid(linkType,clickedClauses)){
-				CreateLink(linkType,clickedClauses);
-			}
-		}	
-	}
-}
+//function Contradiction_Click(main_group){
+//	creatingLink = true;
+//	linkType = CONTRADICTION_LINK_TYPE;
+//	clickedClauses = [main_group.attr("id")];
+//	requiredClauses = 1;
+//}
+//function Addition_Click(main_group){
+//	creatingLink = true;
+//	linkType = ADDITION_LINK_TYPE;
+//	clickedClauses = [main_group.attr("id")];
+//	requiredClauses = 2;
+//}
+//function LinkClauseClick(main_group){
+//	if(creatingLink){
+//		clickedClauses.push(main_group.attr("id"));
+//		requiredClauses += -1;
+//		if(requiredClauses < 1){
+//			creatingLink = false;
+//			if(CheckLinkValid(linkType,clickedClauses)){
+//				CreateLink(linkType,clickedClauses);
+//			}
+//		}	
+//	}
+//}
 function CheckLinkValid(linkType,clickedClauses){
 	return true;
+}
+function DrawInitialEquivalenceLink(clickedClauses){
+	
 }
 function CreateLink(type,clickedClauses){
 	
@@ -81,7 +84,19 @@ function CreateLinkObject(link){
 	link.object = SVG.append("path")
 		.attr("id",link.id)
                 .style("fill","none")
-                .style("stroke-width","3");
+                .style("stroke-width","3")
+		.on("mouseover",function(){LinkMouseOver(link)})
+                .on("mouseout",function(){LinkMouseOut(link)})
+		.on("click",function(){LinkClick(link)});
+	ColorLink(link);
+}
+function LinkMouseOver(link){
+	link.object.style("stroke","#f0f048");
+}
+function LinkMouseOut(link){
+	ColorLink(link);
+}
+function ColorLink(link){
 	if(link.type === IMPLICATION_LINK_TYPE){
 		link.object.style("stroke","steelblue");
 	}
@@ -91,7 +106,6 @@ function CreateLinkObject(link){
 	else{
 		link.object.style("stroke","blue");
 	}
-	
 }
 function UpdateLinkPath(linkId){
 	console.log("updating links for, "+linkId);
@@ -183,4 +197,21 @@ function SetAdditionLinkPath(link){
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
 	link.object.attr("d",line_function(new_d));
+}
+function LinkClick(link){
+	if(MODE == DELETE_RELATION_MODE){
+		console.log("DELETING LINK",link);
+		link.clauses.forEach(clause => {
+			let index = clause.links.indexOf(link.id);
+			if (index != -1){
+				clause.links.splice(index,1);
+			}
+		});	
+		let index = LINKS.indexOf(link);
+		if( index != -1){
+			LINKS.splice(index,1);
+		}
+		link.object.remove();
+		console.log(LINKS,CLAUSES);
+	}
 }

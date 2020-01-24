@@ -2,6 +2,7 @@ let buttonIDs = {
 	"equiv": "equivalence_link_button",
 	"oppos": "opposite_link_button",
 	"and": "and_link_button",
+	"del": "del_link_button",
 	"setFalse": "false_button",
 	"setTrue": "true_button"
 };
@@ -59,6 +60,16 @@ function CreateClauseInput(root){
 		.style("padding", "0px 0px")
 		.style("border", "0px")
 		.on("click",function(){AndButtonClicked()});
+
+	buttons.del = topBar.append("button")
+		.attr("id",buttonIDs.del)
+		.text("🗑️")
+		.style("width","40px")
+		.style("height","40px")
+		.style("font-size","30px")
+		.style("padding", "0px 0px")
+		.style("border", "0px")
+		.on("click",function(){DelButtonClicked()});
 	
 	buttons.setFalse = topBar.append("button")
 		.attr("id",buttonIDs.setFalse)
@@ -110,6 +121,15 @@ function AndButtonClicked(){
 	}
 }
 
+function DelButtonClicked(){
+	if(MODE == DELETE_RELATION_MODE){
+		setMode(DRAGGABLE_MODE);
+	}
+	else{
+		setMode(DELETE_RELATION_MODE);
+	}
+}
+
 function FalseButtonClicked(){
 	if(MODE == SET_CLAUSE_FALSE_MODE){
 		setMode(DRAGGABLE_MODE);
@@ -146,6 +166,9 @@ function ColourSelectedButton(){
 	}
 	else if(MODE == CREATE_AND_RELATIONS_MODE){
 		buttons.and.style("background-color","steelblue");
+	}
+	else if(MODE == DELETE_RELATION_MODE){
+		buttons.del.style("background-color","steelblue");
 	}
 }
 
