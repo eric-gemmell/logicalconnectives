@@ -122,9 +122,34 @@ function SetImplicationLinkPath(link){
 		    {"x":ep.x+90,"y":ep.y}
 		];
 	}
-	else{
-	
+	else if (sp.y - 110 > ep.y){
+		path = [{"x": sp.x+100,"y": sp.y},
+		    {"x":sp.x+100,"y":Math.min(sp.y-4,(ep.y+sp.y+150)/2)},
+		    {"x":ep.x+100,"y":Math.min(sp.y-4,(ep.y+sp.y+150)/2)},
+		    {"x":ep.x+100,"y":ep.y+106},
+		    {"x":ep.x+110,"y":ep.y+106},
+		    {"x":ep.x+90,"y":ep.y+106}
+		];	
 	}
+	else if (sp.x < ep.x){
+		path = [{"x": sp.x+204,"y": sp.y+50},
+		    {"x":Math.max(sp.x+210,(ep.x+sp.x+150)/2),"y":sp.y+50},
+		    {"x":Math.max(sp.x+210,(ep.x+sp.x+150)/2),"y":ep.y+50},
+		    {"x":ep.x-14,"y":ep.y+50},
+		    {"x":ep.x-14,"y":ep.y+40},
+		    {"x":ep.x-14,"y":ep.y+60}
+		];		
+	}
+	else {
+		path = [{"x": sp.x-14,"y": sp.y+50},
+		    {"x":Math.min(sp.x-20,(ep.x+sp.x+250)/2),"y":sp.y+50},
+		    {"x":Math.min(sp.x-20,(ep.x+sp.x+250)/2),"y":ep.y+50},
+		    {"x":ep.x+204,"y":ep.y+50},
+		    {"x":ep.x+204,"y":ep.y+40},
+		    {"x":ep.x+204,"y":ep.y+60}
+		];		
+	}
+
 	var line_function = d3.line()
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
