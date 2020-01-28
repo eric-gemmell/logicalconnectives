@@ -9,6 +9,7 @@ var MODE = DRAGGABLE_MODE;
 
 function ErasePreviousMode(){
 	clickedClauses = [];
+	DeleteLink(tempLink);
 }
 function setMode(newMode){
 	ErasePreviousMode();

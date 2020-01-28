@@ -1,4 +1,5 @@
 var IMPLICATION_LINK_TYPE="implication link";
+var INITIAL_IMPLICATION_LINK_TYPE="initial implication link";
 var CONTRADICTION_LINK_TYPE="contradiction link";
 var ADDITION_LINK_TYPE="addition link";
 
@@ -11,10 +12,13 @@ function GetLinkById(linkId){
 }
 
 var creatingLink = false;
-var linkType = "";
+//var linkType = "";
 var clickedClauses;
-var requiredClauses;
+//var requiredClauses;
+var tempLink = {};
+
 function Implication_Click(main_group){
+	DeleteLink(tempLink)
 	let id = main_group.attr("id");	
 	let index = clickedClauses.indexOf(id);
 	if (index > -1) {
@@ -25,7 +29,7 @@ function Implication_Click(main_group){
 	}
 	console.log("clicked Clauses: ",clickedClauses);
 	if(clickedClauses.length == 1){
-		DrawInitialEquivalenceLink(clickedClauses);
+		CreateInitialLink(INITIAL_IMPLICATION_LINK_TYPE,clickedClauses);
 	}
 	else if(clickedClauses.length == 2){
 		CreateLink(IMPLICATION_LINK_TYPE, clickedClauses);
@@ -59,8 +63,19 @@ function Implication_Click(main_group){
 function CheckLinkValid(linkType,clickedClauses){
 	return true;
 }
-function DrawInitialEquivalenceLink(clickedClauses){
-	
+function CreateInitialLink(type,clickedClauses){
+	let clause = [GetClauseById(clickedClauses[0])];	
+	let link = {
+		id: LINK_CLASS+(LINK_ID++),
+		type:type,
+		clauses:clause,
+	};
+	clause[0].links.push(link.id);
+	CreateLinkObject(link);
+	LINKS.push(link);
+	SetLinkPath(link);
+	DeleteLink(tempLink);
+	tempLink = link;
 }
 function CreateLink(type,clickedClauses){
 	
@@ -97,7 +112,7 @@ function LinkMouseOut(link){
 	ColorLink(link);
 }
 function ColorLink(link){
-	if(link.type === IMPLICATION_LINK_TYPE){
+	if(link.type === IMPLICATION_LINK_TYPE || link.type === INITIAL_IMPLICATION_LINK_TYPE){
 		link.object.style("stroke","steelblue");
 	}
 	else if(link.type === CONTRADICTION_LINK_TYPE){
@@ -116,10 +131,13 @@ function SetLinkPath(link){
 	if(link.type === IMPLICATION_LINK_TYPE){
 		SetImplicationLinkPath(link);
 	}
+	else if(link.type === INITIAL_IMPLICATION_LINK_TYPE){
+		SetInitialImplicationLinkPath(link);
+	}	
 	else if(link.type === CONTRADICTION_LINK_TYPE){
 		SetContradictionLinkPath(link);
 	}
-	else{
+	else if(link.type === ADDITION_LINK_TYPE){
 		SetAdditionLinkPath(link);
 	}
 }
@@ -169,6 +187,19 @@ function SetImplicationLinkPath(link){
 		.y(function(d) { return d.y; });
 	link.object.attr("d",line_function(path));
 }
+function SetInitialImplicationLinkPath(link){
+	let pos = link.clauses[0].pos;
+	let path = [
+		{"x": pos.x-10,"y":pos.y-3},
+		{"x": pos.x+200,"y":pos.y-3},
+		{"x": pos.x+203,"y":pos.y+100}
+	];
+	
+	var line_function = d3.line()
+		.x(function(d) { return d.x; })
+		.y(function(d) { return d.y; });
+	link.object.attr("d",line_function(path));
+}
 function SetContradictionLinkPath(link){	
 	var sp = link.clauses[0].pos;
 	var dp = link.clauses[1].pos;
@@ -200,7 +231,14 @@ function SetAdditionLinkPath(link){
 }
 function LinkClick(link){
 	if(MODE == DELETE_RELATION_MODE){
-		console.log("DELETING LINK",link);
+		DeleteLink(link);
+	}
+}
+
+function DeleteLink(link){
+	if(!isEmptyObject(link)){
+		console.log(Object.keys(link));
+		console.log(link);
 		link.clauses.forEach(clause => {
 			let index = clause.links.indexOf(link.id);
 			if (index != -1){
@@ -212,6 +250,5 @@ function LinkClick(link){
 			LINKS.splice(index,1);
 		}
 		link.object.remove();
-		console.log(LINKS,CLAUSES);
 	}
 }
