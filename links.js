@@ -18,7 +18,7 @@ var clickedClauses;
 var tempLink = {};
 
 function Implication_Click(main_group){
-	DeleteLink(tempLink)
+	tempLink = DeleteLink(tempLink)
 	let id = main_group.attr("id");	
 	let index = clickedClauses.indexOf(id);
 	if (index > -1) {
@@ -27,7 +27,6 @@ function Implication_Click(main_group){
 	else{
 		clickedClauses.push(id);
 	}
-	console.log("clicked Clauses: ",clickedClauses);
 	if(clickedClauses.length == 1){
 		CreateInitialLink(INITIAL_IMPLICATION_LINK_TYPE,clickedClauses);
 	}
@@ -60,9 +59,6 @@ function Implication_Click(main_group){
 //		}	
 //	}
 //}
-function CheckLinkValid(linkType,clickedClauses){
-	return true;
-}
 function CreateInitialLink(type,clickedClauses){
 	let clause = [GetClauseById(clickedClauses[0])];	
 	let link = {
@@ -74,7 +70,7 @@ function CreateInitialLink(type,clickedClauses){
 	CreateLinkObject(link);
 	LINKS.push(link);
 	SetLinkPath(link);
-	DeleteLink(tempLink);
+	tempLink = DeleteLink(tempLink);
 	tempLink = link;
 }
 function CreateLink(type,clickedClauses){
@@ -89,11 +85,18 @@ function CreateLink(type,clickedClauses){
 		clauses:clauses,
 	};
 	clauses.map(function(clause){
-		clause.links.push(link.id);
+		clause.links.push(link);
 	});
 	CreateLinkObject(link);
 	LINKS.push(link);
 	SetLinkPath(link);
+	let truth = CheckTruth(clauses[0]);
+	if(truth["status"] == "error"){
+		DeleteLink(link);
+	}
+	else{
+		SetTruth(truth.checkedClauses);
+	}
 }
 function CreateLinkObject(link){
 	link.object = SVG.append("path")
@@ -122,9 +125,7 @@ function ColorLink(link){
 		link.object.style("stroke","blue");
 	}
 }
-function UpdateLinkPath(linkId){
-	console.log("updating links for, "+linkId);
-	let link = GetLinkById(linkId);
+function UpdateLinkPath(link){
 	SetLinkPath(link); 
 }
 function SetLinkPath(link){
@@ -188,17 +189,35 @@ function SetImplicationLinkPath(link){
 	link.object.attr("d",line_function(path));
 }
 function SetInitialImplicationLinkPath(link){
-	let pos = link.clauses[0].pos;
+	let sp = link.clauses[0].pos;
+	let ep = {"x": window.event.clientX+10, "y": window.event.clientY-90};
 	let path = [
-		{"x": pos.x-10,"y":pos.y-3},
-		{"x": pos.x+200,"y":pos.y-3},
-		{"x": pos.x+203,"y":pos.y+100}
+		{"x": sp.x-10,"y":sp.y-1},
+		{"x": sp.x+206,"y":sp.y-1},
+		{"x": sp.x+206,"y":sp.y+105},
+		{"x": sp.x-10,"y":sp.y+105},
 	];
-	
+	let distanceToStartPoints = [
+		{"d": Math.pow(ep.x-sp.x-103,2)+Math.pow(ep.y-sp.y+1,2),"p":{"x":sp.x+103,"y":sp.y-1}},
+		{"d": Math.pow(ep.x-sp.x-206,2)+Math.pow(ep.y-sp.y-52,2), "p":{"x":sp.x+206,"y":sp.y+50}},
+		{"d": Math.pow(ep.x-sp.x-103,2)+Math.pow(ep.y-sp.y-105,2), "p":{"x":sp.x+103,"y":sp.y+105}},
+		{"d": Math.pow(ep.x-sp.x+10,2)+Math.pow(ep.y-sp.y-52,2), "p":{"x":sp.x-10,"y":sp.y+50}}
+	];
+	let cp = {"d": 100000000000000};;
+	distanceToStartPoints.forEach((point) => {
+		if(point.d < cp.d){
+			cp = point;
+		}
+	});
+	let secondPath = [
+		{"x": cp.p.x,"y": cp.p.y},
+		{"x": ep.x,"y": cp.p.y},
+		{"x": ep.x,"y": ep.y},
+	]	
 	var line_function = d3.line()
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
-	link.object.attr("d",line_function(path));
+	link.object.attr("d",line_function(path)+"Z"+line_function(secondPath));
 }
 function SetContradictionLinkPath(link){	
 	var sp = link.clauses[0].pos;
@@ -237,8 +256,6 @@ function LinkClick(link){
 
 function DeleteLink(link){
 	if(!isEmptyObject(link)){
-		console.log(Object.keys(link));
-		console.log(link);
 		link.clauses.forEach(clause => {
 			let index = clause.links.indexOf(link.id);
 			if (index != -1){
@@ -250,5 +267,6 @@ function DeleteLink(link){
 			LINKS.splice(index,1);
 		}
 		link.object.remove();
+		return {};
 	}
 }

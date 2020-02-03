@@ -48,7 +48,7 @@ function Clause_Drag_Update(main_group){
 	main_group.attr("transform",GroupLocation(newPos.x,newPos.y));
 	let clause = GetClauseById(main_group.attr("id"));
 	clause.pos = newPos;
-	clause.links.forEach(linkId => UpdateLinkPath(linkId));	
+	clause.links.forEach(link => UpdateLinkPath(link));	
 }
 function CreateDraggable(main_group,clause){
 	let drag_handler = d3.drag()
@@ -114,5 +114,5 @@ function CreateClause(clause){
 	//let textArea = CreateTextArea(draggable);
 	CreateTextArea(main,draggable,clause);
 	//let options = CreateOptions(main,clause.id);
-	Set_Clause_True(main);
+	Set_Clause_True(main,clause);
 }

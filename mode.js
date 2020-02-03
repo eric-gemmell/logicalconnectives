@@ -9,11 +9,10 @@ var MODE = DRAGGABLE_MODE;
 
 function ErasePreviousMode(){
 	clickedClauses = [];
-	DeleteLink(tempLink);
+	tempLink = DeleteLink(tempLink);
 }
 function setMode(newMode){
 	ErasePreviousMode();
 	MODE = newMode;
-	console.log("NEW MODE", MODE);
 	ColourSelectedButton();
 }

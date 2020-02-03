@@ -10,6 +10,7 @@ let SVG = ROOT.append("div")
 	.style("width","100%")
 	.style("height","95vh")
 	.append("svg")
+	.on("mousemove",() => MouseMoveOnSVG())
 	.style("width","100%")
 	.style("height","95vh")
 	.style("background-color","none");

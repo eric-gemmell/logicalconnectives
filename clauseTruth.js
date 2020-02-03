@@ -6,45 +6,73 @@ function Set_True_Click(main_group){
 	let clause = GetClauseById(main_group.attr("id"));
 	Set_Clause_True(main_group,clause);
 }
-
-function Set_Clause_False(main_group){
-	//perform checks here for okayness of switch to true
-	let clause = GetClauseById(main_group.attr("id"));
+function CheckTruth(clause){
+	let checkedClauses = {};
+	checkedClauses[clause.id] = {"clause": clause, "truth":clause.truth};
+	return CheckTruthIterative(clause,checkedClauses);
+}
+function CheckTruthIterative(clause,checkedClauses){
+	console.log("Iterating through clause",clause);
+	let nextClauses = [];
+	clause.links.forEach((link) => {
+		if(link.type == IMPLICATION_LINK_TYPE){
+			if(link.clauses[0] === clause){
+				if(link.clauses[1].id in checkedClauses){
+					if(checkedClauses[link.clauses[1].id].truth != clause.truth){
+						return {"status":"error"};
+					}
+				}
+				else{
+					checkedClauses[link.clauses[1].id] = {"clause":link.clauses[1], "truth": clause.truth};
+					if(clause.truth != link.clauses[1].truth){
+						nextClauses.push(link.clauses[1]);
+					}
+				}
+			}	
+			else{
+				if(link.clauses[0].id in checkedClauses){
+					if(checkedClauses[link.clauses[0].id].truth != clause.truth){
+						return {"status":"error"};
+					}
+				}
+				else{
+					checkedClauses[link.clauses[0].id] = {"clause": link.clauses[0], "truth": clause.truth};
+					if(clause.truth != link.clauses[0].truth){
+						nextClauses.push(link.clauses[0]);
+					}	
+				}
+			}
+		}
+	});
+	for(i = 0; i < nextClauses.length; i++){
+		let result = CheckTruthIterative(nextClauses[i],checkedClauses);
+		if(result["status"] == "error"){
+			return result;
+		}
+	}
+	return {"status":"success","checkedClauses":checkedClauses};
+}
+function SetTruth(checkedClauses){
+	for (let id in checkedClauses) {
+		if (checkedClauses.hasOwnProperty(id)) {
+			console.log(checkedClauses[id]);
+			let clause = checkedClauses[id].clause;
+			let main_group = d3.select("#"+ id);
+			if(checkedClauses[id].truth){
+				Set_Clause_True(main_group,clause);
+			}
+			else{
+				Set_Clause_False(main_group,clause);
+			}
+		}
+	}
+}
+function Set_Clause_False(main_group,clause){
 	clause.truth = false;
 	main_group.attr("truth","false");
 	SetClauseAppearance(main_group,false);
-//	clausemain_group
-//	main_group.attr("truth","true")
-//	SetClauseAppearance(main_group,false);
-//	console.log(clause.links);
-//	clause.links.forEach(function(linkId){
-//	let link = GetLinkById(linkId);
-//	if(link.type === IMPLICATION_LINK_TYPE){
-//		console.log("implication");
-//		console.log(link);
-//      	if(main_group.attr("id") === link.clauses[0].id){
-//			console.log("has children!");
-//			let childClause = GetClauseById(link.clauses[1].id);
-//			let childMainGroup = d3.select("#"+childClause.id);
-//			Set_Clause_False(childMainGroup,childClause);
-//		}        
-//	}
-//	else if(link.type === CONTRADICTION_LINK_TYPE){
-//		console.log("contradiction");
-//		console.log(link);
-//		if(main_group.attr("id") === link.clauses[0].id){
-//			console.log("has children!");
-//			let childClause = GetClauseById(link.clauses[1].id);
-//			let childMainGroup = d3.select("#"+childClause.id);
-//			Set_Clause_True(childMainGroup,childClause);
-//		}        
-//	}
-//	else{
-//	}
-//	});
 }
-function Set_Clause_True(main_group){
-	let clause = GetClauseById(main_group.attr("id"));
+function Set_Clause_True(main_group,clause){
 	clause.truth = true;
 	main_group.attr("truth","true");
 	SetClauseAppearance(main_group,true);
