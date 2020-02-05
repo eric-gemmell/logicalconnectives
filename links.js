@@ -91,6 +91,7 @@ function CreateLink(type,clickedClauses){
 	LINKS.push(link);
 	SetLinkPath(link);
 	let truth = CheckTruth(clauses[0]);
+	console.log("Checking finished",truth);
 	if(truth["status"] == "error"){
 		DeleteLink(link);
 	}
