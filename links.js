@@ -1,6 +1,6 @@
-var IMPLICATION_LINK_TYPE="implication link";
-var INITIAL_IMPLICATION_LINK_TYPE="initial implication link";
-var CONTRADICTION_LINK_TYPE="contradiction link";
+var EQUIVALENCE_LINK_TYPE="equivalence link";
+var INITIAL_EQUIVALENCE_LINK_TYPE="initial equivalence link";
+var OPPOSITE_LINK_TYPE="opposite link";
 var ADDITION_LINK_TYPE="addition link";
 
 var LINK_CLASS = "link";
@@ -17,7 +17,7 @@ var clickedClauses;
 //var requiredClauses;
 var tempLink = {};
 
-function Implication_Click(main_group){
+function EquivalenceClick(main_group){
 	tempLink = DeleteLink(tempLink)
 	let id = main_group.attr("id");	
 	let index = clickedClauses.indexOf(id);
@@ -28,10 +28,10 @@ function Implication_Click(main_group){
 		clickedClauses.push(id);
 	}
 	if(clickedClauses.length == 1){
-		CreateInitialLink(INITIAL_IMPLICATION_LINK_TYPE,clickedClauses);
+		CreateInitialLink(INITIAL_EQUIVALENCE_LINK_TYPE,clickedClauses);
 	}
 	else if(clickedClauses.length == 2){
-		CreateLink(IMPLICATION_LINK_TYPE, clickedClauses);
+		CreateLink(EQUIVALENCE_LINK_TYPE, clickedClauses);
 		clickedClauses = [];
 	}
 }
@@ -116,10 +116,10 @@ function LinkMouseOut(link){
 	ColorLink(link);
 }
 function ColorLink(link){
-	if(link.type === IMPLICATION_LINK_TYPE || link.type === INITIAL_IMPLICATION_LINK_TYPE){
+	if(link.type === EQUIVALENCE_LINK_TYPE || link.type === INITIAL_EQUIVALENCE_LINK_TYPE){
 		link.object.style("stroke","steelblue");
 	}
-	else if(link.type === CONTRADICTION_LINK_TYPE){
+	else if(link.type === OPPOSITE_LINK_TYPE){
 		link.object.style("stroke","red");
 	}
 	else{
@@ -130,20 +130,20 @@ function UpdateLinkPath(link){
 	SetLinkPath(link); 
 }
 function SetLinkPath(link){
-	if(link.type === IMPLICATION_LINK_TYPE){
-		SetImplicationLinkPath(link);
+	if(link.type === EQUIVALENCE_LINK_TYPE){
+		SetEquivalenceLinkPath(link);
 	}
-	else if(link.type === INITIAL_IMPLICATION_LINK_TYPE){
-		SetInitialImplicationLinkPath(link);
+	else if(link.type === INITIAL_EQUIVALENCE_LINK_TYPE){
+		SetInitialEquivalenceLinkPath(link);
 	}	
-	else if(link.type === CONTRADICTION_LINK_TYPE){
+	else if(link.type === OPPOSITION_LINK_TYPE){
 		SetContradictionLinkPath(link);
 	}
 	else if(link.type === ADDITION_LINK_TYPE){
 		SetAdditionLinkPath(link);
 	}
 }
-function SetImplicationLinkPath(link){	
+function SetEquivalenceLinkPath(link){	
 	let sp = link.clauses[0].pos;
 	let ep = link.clauses[1].pos;
 	let path = [];
@@ -189,7 +189,7 @@ function SetImplicationLinkPath(link){
 		.y(function(d) { return d.y; });
 	link.object.attr("d",line_function(path));
 }
-function SetInitialImplicationLinkPath(link){
+function SetInitialEquivalenceLinkPath(link){
 	let sp = link.clauses[0].pos;
 	let ep = {"x": window.event.clientX+10, "y": window.event.clientY-90};
 	let path = [

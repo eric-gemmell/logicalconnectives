@@ -1,30 +1,34 @@
 function Set_False_Click(main_group){
 	let clause = GetClauseById(main_group.attr("id"));
 	Set_Clause_False(main_group,clause);
+	let truth = CheckTruth(clause);
+	if(truth["status"] == "error"){
+		Set_Clause_True(main_group,clause);
+	}
+	else{
+		SetTruth(truth.checkedClauses);
+	}
 }
 function Set_True_Click(main_group){
 	let clause = GetClauseById(main_group.attr("id"));
 	Set_Clause_True(main_group,clause);
+	let truth = CheckTruth(clause);
+	if(truth["status"] == "error"){
+		Set_Clause_False(main_group,clause);
+	}
+	else{
+		SetTruth(truth.checkedClauses);
+	}
 }
-var nIter = 0;
 function CheckTruth(clause){
-	nIter = 0;
-	console.log("Starting CheckTruth Process");
 	let checkedClauses = {};
 	checkedClauses[clause.id] = {"clause": clause, "truth":clause.truth};
 	return CheckTruthIterative(clause,checkedClauses);
 }
 function CheckTruthIterative(clause,checkedClauses){
-	console.log("Iterating through clause",clause);
-	nIter ++;
-	if(nIter > 10){
-		console.log("Iterated More than 10 times! Breaking");
-		return {"status":"error"};
-	}
 	let nextClauses = [];
 	clause.links.forEach((link) => {
-		console.log("Iterating through link", link);
-		if(link.type == IMPLICATION_LINK_TYPE){
+		if(link.type == EQUIVALENCE_LINK_TYPE){
 			if(link.clauses[0] === clause){
 				if(link.clauses[1].id in checkedClauses){
 					if(checkedClauses[link.clauses[1].id].truth != checkedClauses[clause.id].truth){
@@ -53,19 +57,12 @@ function CheckTruthIterative(clause,checkedClauses){
 			}
 		}
 	});
-	console.log("Next Clauses", nextClauses);
-	console.log("Checked Clauses",checkedClauses);
-	let numIters = 0;
 	for(let i = 0; i < nextClauses.length; i++){
-		console.log(i, nextClauses.length);
-		console.log("Iteration num: ",numIters);
-		numIters ++;
 		let result = CheckTruthIterative(nextClauses[i],checkedClauses);
 		if(result["status"] == "error"){
 			return result;
 		}
 	}
-	console.log("Iterated through all next clauses");
 	return {"status":"success","checkedClauses":checkedClauses};
 }
 function SetTruth(checkedClauses){
