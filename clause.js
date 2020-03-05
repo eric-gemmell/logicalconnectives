@@ -29,6 +29,9 @@ function Draggable_Click(main_group){
 	else if(MODE == CREATE_EQUIVALENCE_RELATIONS_MODE){
 		EquivalenceClick(main_group);
 	}
+	else if(MODE == CREATE_OPPOSITE_RELATIONS_MODE){
+		OppositeClick(main_group);
+	}
 }
 function Clause_Drag_Start(main_group){
 	let currentPos = GetGroupLocation(main_group);
@@ -48,6 +51,10 @@ function Clause_Drag_Update(main_group){
 	let clause = GetClauseById(main_group.attr("id"));
 	clause.pos = newPos;
 	clause.links.forEach(link => UpdateLinkPath(link));	
+	if(!isEmptyObject(tempLink)){
+		UpdateLinkPath(tempLink);
+	}
+
 }
 function CreateDraggable(main_group,clause){
 	let drag_handler = d3.drag()

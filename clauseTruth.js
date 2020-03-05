@@ -27,15 +27,22 @@ function CheckTruth(clause){
 }
 function CheckTruthIterative(clause,checkedClauses){
 	let nextClauses = [];
-	clause.links.forEach((link) => {
+	console.log("Iterating trough clause: ",clause);
+	for(let i = 0; i < clause.links.length; i++){
+		let link = clause.links[i];
 		if(link.type == EQUIVALENCE_LINK_TYPE){
+			console.log("checking equivalence link", link);
 			if(link.clauses[0] === clause){
+				console.log("link stems from this clause");
 				if(link.clauses[1].id in checkedClauses){
+					console.log("The second link should be " + checkedClauses[clause.id].truth + ", and is: " + checkedClauses[link.clauses[1].id].truth);
 					if(checkedClauses[link.clauses[1].id].truth != checkedClauses[clause.id].truth){
+						console.log("Should be breaking");
 						return {"status":"error"};
 					}
 				}
 				else{
+					console.log("Since the starting clause is: "+ checkedClauses[clause.id].truth + ", Setting that child should be: " + checkedClauses[clause.id].truth);  
 					checkedClauses[link.clauses[1].id] = {"clause":link.clauses[1], "truth": checkedClauses[clause.id].truth};
 					if(checkedClauses[clause.id].truth != link.clauses[1].truth){
 						nextClauses.push(link.clauses[1]);
@@ -43,12 +50,16 @@ function CheckTruthIterative(clause,checkedClauses){
 				}
 			}	
 			else{
+				console.log("link leads to this clause");
 				if(link.clauses[0].id in checkedClauses){
+					console.log("The first link should be " + checkedClauses[clause.id].truth + ", and is: " + checkedClauses[link.clauses[0].id].truth);
 					if(checkedClauses[link.clauses[0].id].truth != checkedClauses[clause.id].truth){
+						console.log("Should be breaking");
 						return {"status":"error"};
 					}
 				}
 				else{
+					console.log("Since the ending clause is: "+ checkedClauses[clause.id].truth + ", Setting that parent should be: " + checkedClauses[clause.id].truth);  
 					checkedClauses[link.clauses[0].id] = {"clause": link.clauses[0], "truth": checkedClauses[clause.id].truth};
 					if(checkedClauses[clause.id].truth != link.clauses[0].truth){
 						nextClauses.push(link.clauses[0]);
@@ -56,10 +67,50 @@ function CheckTruthIterative(clause,checkedClauses){
 				}
 			}
 		}
-	});
+		if(link.type == OPPOSITE_LINK_TYPE){
+			console.log("checking opposite link", link);
+			if(link.clauses[0] === clause){
+				console.log("link stems from this clause");
+				if(link.clauses[1].id in checkedClauses){
+					console.log("The second link should be " + !checkedClauses[clause.id].truth + ", and is: " + checkedClauses[link.clauses[1].id].truth);
+					if(checkedClauses[link.clauses[1].id].truth != !checkedClauses[clause.id].truth){
+						console.log("Should be breaking");
+						return {"status":"error"};
+					}
+				}
+				else{
+					console.log("Since the starting clause is: "+ checkedClauses[clause.id].truth + ", Setting that child should be: " + !checkedClauses[clause.id].truth);  
+					checkedClauses[link.clauses[1].id] = {"clause":link.clauses[1], "truth": !checkedClauses[clause.id].truth};
+					if(checkedClauses[link.clauses[1].id].truth != link.clauses[1].truth){
+						nextClauses.push(link.clauses[1]);
+					}
+				}
+			}	
+			else{
+				console.log("link leads to this clause");
+				if(link.clauses[0].id in checkedClauses){
+					console.log("The first link should be " + !checkedClauses[clause.id].truth + ", and is: " + checkedClauses[link.clauses[0].id].truth);
+					if(checkedClauses[link.clauses[0].id].truth != !checkedClauses[clause.id].truth){
+						console.log("Should be breaking");
+						return {"status":"error"};
+					}
+				}
+				else{
+					console.log("Since the ending clause is: "+ checkedClauses[clause.id].truth + ", Setting that parent should be: " + !checkedClauses[clause.id].truth);  
+					checkedClauses[link.clauses[0].id] = {"clause": link.clauses[0], "truth": !checkedClauses[clause.id].truth};
+					if(checkedClauses[link.clauses[0].id].truth != link.clauses[0].truth){
+						nextClauses.push(link.clauses[0]);
+					}
+				}
+			}
+		}
+	}
+	console.log("Next clauses: ", nextClauses); 
 	for(let i = 0; i < nextClauses.length; i++){
 		let result = CheckTruthIterative(nextClauses[i],checkedClauses);
+		console.log(result);
 		if(result["status"] == "error"){
+			console.log("Got an Error!");
 			return result;
 		}
 	}
