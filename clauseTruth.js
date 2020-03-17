@@ -67,7 +67,42 @@ function CheckTruthIterative(clause,checkedClauses){
 				}
 			}
 		}
-		if(link.type == OPPOSITE_LINK_TYPE){
+		else if(link.type == IMPLICATION_LINK_TYPE){
+			console.log("checking implication link", link);
+			if(link.clauses[0] === clause){
+				console.log("link stems from this clause");
+				if(link.clauses[1].id in checkedClauses){
+					if(checkedClauses[clause.id].truth === true && checkedClauses[link.clauses[1].id] === false){
+						console.log("Should be breaking");
+						return {"status":"error"};
+					}
+				}
+				else if(checkedClauses[clause.id].truth === true){
+					console.log("the parent link is true therefore so must the child link");
+					checkedClauses[link.clauses[1].id] = {"clause": link.clauses[1], "truth": true};
+					if(checkedClauses[link.clauses[1].id].truth != link.clauses[1].truth){
+						nextClauses.push(link.clauses[1]);
+					}
+				}
+			}
+			else{
+				console.log("link leads to this clause");	
+				if(link.clauses[0].id in checkedClauses){
+					if(checkedClauses[clause.id].truth === false && checkedClauses[link.clauses[0].id] === true){
+						console.log("Should be breaking");
+						return {"status":"error"};
+					}
+				}
+				else if(checkedClauses[clause.id].truth === false){
+					console.log("the child link is false therefore the parent link must be false");
+					checkedClauses[link.clauses[0].id] = {"clause": link.clauses[0], "truth": false};
+					if(checkedClauses[link.clauses[0].id].truth != link.clauses[0].truth){
+						nextClauses.push(link.clauses[0]);
+					}
+				}
+			}
+		}
+		else if(link.type == OPPOSITE_LINK_TYPE){
 			console.log("checking opposite link", link);
 			if(link.clauses[0] === clause){
 				console.log("link stems from this clause");

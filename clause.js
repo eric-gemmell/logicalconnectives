@@ -29,6 +29,9 @@ function Draggable_Click(main_group){
 	else if(MODE == CREATE_EQUIVALENCE_RELATIONS_MODE){
 		EquivalenceClick(main_group);
 	}
+	else if(MODE == CREATE_IMPLICATION_RELATIONS_MODE){
+		ImplicationClick(main_group);
+	}
 	else if(MODE == CREATE_OPPOSITE_RELATIONS_MODE){
 		OppositeClick(main_group);
 	}

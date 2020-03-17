@@ -1,5 +1,6 @@
 let DRAGGABLE_MODE = "drag mode";
 let CREATE_EQUIVALENCE_RELATIONS_MODE = "create equivalence relations";
+let CREATE_IMPLICATION_RELATIONS_MODE = "create implication relations";
 let CREATE_OPPOSITE_RELATIONS_MODE = "create opposite relations";
 let CREATE_AND_RELATIONS_MODE = "create and relations";
 let SET_CLAUSE_FALSE_MODE = "set clause false";

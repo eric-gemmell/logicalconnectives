@@ -1,5 +1,6 @@
 let buttonIDs = {
 	"equiv": "equivalence_link_button",
+	"impli": "implication_link_button",
 	"oppos": "opposite_link_button",
 	"and": "and_link_button",
 	"del": "del_link_button",
@@ -41,6 +42,16 @@ function CreateClauseInput(root){
 		.style("border", "0px")
 		.on("click",function(){EquivButtonClicked()});
 		
+	buttons.impli = topBar.append("button")
+		.attr("id",buttonIDs.impli)
+		.text("⇒")
+		.style("width","50px")
+		.style("height","40px")
+		.style("font-size","30px")
+		.style("padding", "0px 0px")
+		.style("border", "0px")
+		.on("click",function(){ImpliButtonClicked()});
+
 	buttons.oppos = topBar.append("button")
 		.attr("id",buttonIDs.oppos)
 		.text("!⇔")
@@ -103,6 +114,15 @@ function EquivButtonClicked(){
 	}
 }
 
+function ImpliButtonClicked(){
+	if(MODE == CREATE_IMPLICATION_RELATIONS_MODE){
+		setMode(DRAGGABLE_MODE);
+	}
+	else{
+		setMode(CREATE_IMPLICATION_RELATIONS_MODE);
+	}
+}
+
 function OpposButtonClicked(){	
 	if(MODE == CREATE_OPPOSITE_RELATIONS_MODE){
 		setMode(DRAGGABLE_MODE);
@@ -160,6 +180,9 @@ function ColourSelectedButton(){
 	}
 	else if(MODE == CREATE_EQUIVALENCE_RELATIONS_MODE){
 		buttons.equiv.style("background-color","steelblue");
+	}
+	else if(MODE == CREATE_IMPLICATION_RELATIONS_MODE){
+		buttons.impli.style("background-color","steelblue");
 	}
 	else if(MODE == CREATE_OPPOSITE_RELATIONS_MODE){
 		buttons.oppos.style("background-color","steelblue");

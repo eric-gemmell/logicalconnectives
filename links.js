@@ -1,5 +1,7 @@
 var EQUIVALENCE_LINK_TYPE="equivalence link";
 var INITIAL_EQUIVALENCE_LINK_TYPE="initial equivalence link";
+var IMPLICATION_LINK_TYPE="implication link";
+var INITIAL_IMPLICATION_LINK_TYPE="initial implication link";
 var OPPOSITE_LINK_TYPE="opposite link";
 var INITIAL_OPPOSITE_LINK_TYPE="initial opposite link";
 var ADDITION_LINK_TYPE="addition link";
@@ -49,6 +51,24 @@ function OppositeClick(main_group){
 	}
 	else if(clickedClauses.length == 2){
 		CreateLink(OPPOSITE_LINK_TYPE, clickedClauses);
+		clickedClauses = [];
+	}
+}
+function ImplicationClick(main_group){	
+	tempLink = DeleteLink(tempLink)
+	let id = main_group.attr("id");	
+	let index = clickedClauses.indexOf(id);
+	if (index > -1) {
+		clickedClauses.splice(index, 1);
+	}
+	else{
+		clickedClauses.push(id);
+	}
+	if(clickedClauses.length == 1){
+		CreateInitialLink(INITIAL_IMPLICATION_LINK_TYPE,clickedClauses);
+	}
+	else if(clickedClauses.length == 2){
+		CreateLink(IMPLICATION_LINK_TYPE, clickedClauses);
 		clickedClauses = [];
 	}
 }
@@ -115,6 +135,9 @@ function ColorLink(link){
 	else if(link.type === OPPOSITE_LINK_TYPE || link.type === INITIAL_OPPOSITE_LINK_TYPE){
 		link.object.style("stroke","red");
 	}
+	else if(link.type === IMPLICATION_LINK_TYPE || link.type === INITIAL_IMPLICATION_LINK_TYPE){
+		link.object.style("stroke","green");
+	}
 	else{
 		link.object.style("stroke","blue");
 	}
@@ -128,6 +151,12 @@ function SetLinkPath(link){
 	}
 	else if(link.type === INITIAL_EQUIVALENCE_LINK_TYPE){
 		SetInitialEquivalenceLinkPath(link);
+	}	
+	else if(link.type === IMPLICATION_LINK_TYPE){
+		SetImplicationLinkPath(link);
+	}
+	else if(link.type === INITIAL_IMPLICATION_LINK_TYPE){
+		SetInitialImplicationLinkPath(link);
 	}	
 	else if(link.type === OPPOSITE_LINK_TYPE){
 		SetOppositionLinkPath(link);
@@ -221,6 +250,48 @@ function SetEquivalenceLinkPath(link){
 	link.object.attr("d",line_function(basicPath.path));
 }
 function SetInitialEquivalenceLinkPath(link){
+	let sp = link.clauses[0].pos;
+	let ep = {"x": window.event.clientX-100, "y": window.event.clientY-145};
+	var line_function = d3.line()
+		.x(function(d) { return d.x; })
+		.y(function(d) { return d.y; });
+	link.object.attr("d",line_function(BasicInitialLinkPath(sp,ep))+"Z"+line_function(BasicLinkPath(sp,ep).path));
+}
+function SetImplicationLinkPath(link){	
+	let sp = link.clauses[0].pos;
+	let ep = link.clauses[1].pos;
+	let basicPath = BasicLinkPath(sp,ep);
+	if(basicPath.direction == "Down"){ 
+		basicPath.path.push(
+			{"x":ep.x+110,"y":ep.y},
+			{"x":ep.x+90,"y":ep.y}
+		);
+	}
+	else if (basicPath.direction == "Up"){
+		basicPath.path.push(
+			{"x":ep.x+110,"y":ep.y+106},
+			{"x":ep.x+90,"y":ep.y+106}
+		);	
+	}
+	else if (basicPath.direction == "Right"){
+		basicPath.path.push(
+			{"x":ep.x-14,"y":ep.y+40},
+			{"x":ep.x-14,"y":ep.y+60}
+		);		
+	}
+	else {
+		basicPath.path.push(
+			{"x":ep.x+204,"y":ep.y+40},
+			{"x":ep.x+204,"y":ep.y+60}
+		);		
+	}
+
+	var line_function = d3.line()
+		.x(function(d) { return d.x; })
+		.y(function(d) { return d.y; });
+	link.object.attr("d",line_function(basicPath.path));
+}
+function SetInitialImplicationLinkPath(link){
 	let sp = link.clauses[0].pos;
 	let ep = {"x": window.event.clientX-100, "y": window.event.clientY-145};
 	var line_function = d3.line()
