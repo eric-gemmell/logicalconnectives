@@ -71,34 +71,46 @@ function CheckTruthIterative(clause,checkedClauses){
 			console.log("checking implication link", link);
 			if(link.clauses[0] === clause){
 				console.log("link stems from this clause");
-				if(link.clauses[1].id in checkedClauses){
-					if(checkedClauses[clause.id].truth === true && checkedClauses[link.clauses[1].id] === false){
-						console.log("Should be breaking");
-						return {"status":"error"};
+				if(checkedClauses[clause.id].truth === true){
+					console.log("since the parent clause is true so must the child clause");
+					if(link.clauses[1].id in checkedClauses){
+						console.log("the child clause is: " + checkedClauses[link.clauses[1].id].truth); 
+						if(checkedClauses[link.clauses[1].id].truth === false){
+							console.log("Should be breaking");
+							return {"status":"error"};
+						}
+					}
+					else{
+						checkedClauses[link.clauses[1].id] = {"clause":link.clauses[1],"truth":true};
+						if(link.clauses[1].truth != true){
+							nextClauses.push(link.clauses[1]);
+						}
 					}
 				}
-				else if(checkedClauses[clause.id].truth === true){
-					console.log("the parent link is true therefore so must the child link");
-					checkedClauses[link.clauses[1].id] = {"clause": link.clauses[1], "truth": true};
-					if(checkedClauses[link.clauses[1].id].truth != link.clauses[1].truth){
-						nextClauses.push(link.clauses[1]);
-					}
+				else{
+					console.log("Since the parent clause is false, nothing can be infered for the child");
 				}
 			}
 			else{
-				console.log("link leads to this clause");	
-				if(link.clauses[0].id in checkedClauses){
-					if(checkedClauses[clause.id].truth === false && checkedClauses[link.clauses[0].id] === true){
-						console.log("Should be breaking");
-						return {"status":"error"};
+				console.log("link leads to this clause");
+				if(checkedClauses[clause.id].truth === false){
+					console.log("since the child clause is false so must the parent clause");
+					if(link.clauses[0].id in checkedClauses){
+						console.log("the parent clause is: " + checkedClauses[link.clauses[0].id].truth);
+						if(checkedClauses[link.clauses[0].id].truth === true){
+							console.log("Should be breaking");
+							return {"status":"error"};
+						}
+					}
+					else{
+						checkedClauses[link.clauses[0].id] = {"clause":link.clauses[0],"truth":false};
+						if(link.clauses[0].truth != false){
+							nextClauses.push(link.clauses[0]);
+						}
 					}
 				}
-				else if(checkedClauses[clause.id].truth === false){
-					console.log("the child link is false therefore the parent link must be false");
-					checkedClauses[link.clauses[0].id] = {"clause": link.clauses[0], "truth": false};
-					if(checkedClauses[link.clauses[0].id].truth != link.clauses[0].truth){
-						nextClauses.push(link.clauses[0]);
-					}
+				else{
+					console.log("Since the child clause is true, nothing can be infered for the parent");
 				}
 			}
 		}
