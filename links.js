@@ -156,13 +156,13 @@ function ColorLink(link){
 		link.object.style("stroke","steelblue");
 	}
 	else if(link.type === OPPOSITE_LINK_TYPE || link.type === INITIAL_OPPOSITE_LINK_TYPE){
-		link.object.style("stroke","red");
+		link.object.style("stroke","#eb4034");
 	}
 	else if(link.type === IMPLICATION_LINK_TYPE || link.type === INITIAL_IMPLICATION_LINK_TYPE){
-		link.object.style("stroke","green");
+		link.object.style("stroke","#7cf29b");
 	}
 	else{
-		link.object.style("stroke","blue");
+		link.object.style("stroke","#a178de");
 	}
 }
 function UpdateLinkPath(link){
@@ -208,7 +208,6 @@ function ClosestClauseSide(sp,ep){
 	spDirection = direction[startDistances.indexOf(Math.min(...startDistances))];
 	ep = endSides[endDistances.indexOf(Math.min(...endDistances))];
 	epDirection = direction[endDistances.indexOf(Math.min(...endDistances))];
-	console.log({sp:sp,spDirection:spDirection,ep:ep,epDirection:epDirection});
 	return {sp:sp,spDirection:spDirection,ep:ep,epDirection:epDirection};
 }
 function BasicLinkPath(startPos,endPos,overrideStartPosChange = false, overrideEndPosChange = false){	
@@ -218,6 +217,7 @@ function BasicLinkPath(startPos,endPos,overrideStartPosChange = false, overrideE
 		sp = startPos;
 	}
 	if(overrideEndPosChange){
+		console.log("OVERRIDING");
 		ep = endPos;
 	}
 	path.push(sp);
@@ -289,11 +289,11 @@ function SetEquivalenceLinkPath(link){
 }
 function SetInitialEquivalenceLinkPath(link){
 	let sp = link.clauses[0].pos;
-	let ep = {"x": window.event.clientX-100, "y": window.event.clientY-145};
+	let ep = {"x": window.event.clientX+5, "y": window.event.clientY-105};
 	var line_function = d3.line()
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
-	link.object.attr("d",line_function(BasicLinkPath(sp,ep).path));
+	link.object.attr("d",line_function(BasicLinkPath(sp,ep,false,true).path));
 }
 function SetImplicationLinkPath(link){	
 	let sp = link.clauses[0].pos;
@@ -381,18 +381,15 @@ function SetInitialOppositionLinkPath(link){
 }
 function SetAndLinkPath(link){	
 	var sp = link.clauses[0].pos;
-	var dp = link.clauses[2].pos;
-	var dp2 = link.clauses[1].pos;
-	var new_d = [{"x": sp.x+205,"y": sp.y+20},
-	    {"x":dp.x+100,"y":sp.y+20},
-	    {"x":dp.x+100,"y":dp.y},
-	    {"x":dp.x+100,"y":dp2.y+20},
-	    {"x":dp2.x+205,"y":dp2.y+20},
-	];
+	var sp2 = link.clauses[1].pos;
+	var ep = link.clauses[2].pos;
 	var line_function = d3.line()
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
-	link.object.attr("d",line_function(new_d));
+	let path = BasicLinkPath(sp,sp2).path;
+	let meanX = path[1].x/2 + path[2].x/2;
+	let meanY = path[1].y/2 + path[2].y/2;
+	link.object.attr("d",line_function(path)+line_function(BasicLinkPath({"x":meanX,"y":meanY},ep,true,false).path));
 }
 function SetInitialAndLinkPath(link){
 	let firstClause = link.clauses[0].pos;
@@ -401,17 +398,15 @@ function SetInitialAndLinkPath(link){
 		.x(function(d) { return d.x; })
 		.y(function(d) { return d.y; });
 	if(link.clauses.length == 1){
-		secondClause = {"x": window.event.clientX-100, "y": window.event.clientY-145};
-		link.object.attr("d",line_function(BasicLinkPath(firstClause,secondClause).path));
+		secondClause = {"x": window.event.clientX+5, "y": window.event.clientY-105};
+		link.object.attr("d",line_function(BasicLinkPath(firstClause,secondClause,false,true).path));
 	}
 	else if(link.clauses.length == 2){
 		secondClause = link.clauses[1].pos;
 		let path = BasicLinkPath(firstClause,secondClause).path;
 		let meanX = path[1].x/2 + path[2].x/2;
 		let meanY = path[1].y/2 + path[2].y/2;
-		console.log(meanX);
-		let secondPath = [{"x":meanX,"y":meanY},{"x":window.event.clientX, "y": window.event.clientY}];
-		link.object.attr("d",line_function(path)+line_function(secondPath));
+		link.object.attr("d",line_function(path)+line_function(BasicLinkPath({"x":meanX,"y":meanY},{"x":window.event.clientX+5, "y": window.event.clientY-105},true,true).path));
 	}
 }
 function LinkClick(link){
