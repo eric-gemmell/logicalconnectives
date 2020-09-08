@@ -35,6 +35,9 @@ function Draggable_Click(main_group){
 	else if(MODE == CREATE_OPPOSITE_RELATIONS_MODE){
 		OppositeClick(main_group);
 	}
+	else if(MODE == CREATE_AND_RELATIONS_MODE){
+		AndClick(main_group);
+	}
 }
 function Clause_Drag_Start(main_group){
 	let currentPos = GetGroupLocation(main_group);
