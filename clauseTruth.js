@@ -151,6 +151,87 @@ function CheckTruthIterative(clause,checkedClauses){
 				}
 			}
 		}
+		else if(link.type == AND_LINK_TYPE){
+			console.log("checking And link", link);
+			if(link.clauses[2] === clause){
+				console.log("link leads to this clause");
+				if(clause.truth == true){
+					console.log("Output is true, so so must be the two inputs");
+					console.log("Checking first 'and' link origin clause");
+					if(link.clauses[0].id in checkedClauses){
+						if(checkedClauses[link.clauses[0].id].truth != true){
+							console.log("Should be breaking");
+							return {"status":"error"};
+						}
+					}
+					checkedClauses[link.clauses[0].id] = {"clause":link.clauses[0],"truth":true};
+					if(checkedClauses[link.clauses[0].id].truth != link.clauses[0].truth){
+						nextClauses.push(link.clauses[0]);
+					}
+					console.log("Checking second 'and' link origin clause");
+					if(link.clauses[1].id in checkedClauses){
+						if(checkedClauses[link.clauses[1].id].truth != true){
+							console.log("Should be breaking");
+							return {"status":"error"};
+						}
+					}
+					checkedClauses[link.clauses[1].id] = {"clause":link.clauses[1],"truth":true};
+					if(checkedClauses[link.clauses[1].id].truth != link.clauses[1].truth){
+						nextClauses.push(link.clauses[1]);
+					}
+				}
+				else{
+					console.log("Output is false, so the two inputs cannot be true");
+					if(link.clauses[0].id in checkedClauses && link.clauses[1].id in checkedClauses){
+						if(checkedClauses[link.clauses[0].id].truth == true && checkedClauses[link.clauses[1].id].truth == true){
+							console.log("Should be breaking");
+							return {"status":"error"};
+						}
+					}
+					if(!(link.clauses[0] in checkedClauses) && !(link.clauses[1] in checkedClauses)){
+						if(link.clause[0].truth && link.clause[1].truth){
+							console.log("both parent clauses are undecided, and I can't decide for them :(");
+							console.log("Should be breaking");
+							return {"status":"error"};
+						}
+						checkedClauses[link.clauses[0].id] = {"clause":link.clauses[0],"truth":link.clauses[0].truth};
+						if(checkedClauses[link.clauses[0].id].truth != link.clauses[0].truth){
+							nextClauses.push(link.clauses[0]);
+						}
+						checkedClauses[link.clauses[1].id] = {"clause":link.clauses[1],"truth":link.clauses[1].truth};
+						if(checkedClauses[link.clauses[1].id].truth != link.clauses[1].truth){
+							nextClauses.push(link.clauses[1]);
+						}
+					}
+					let id0, id1 = 0,0;
+					if(link.clauses[0] in checkedClauses){
+						id0 = 0;
+						id1 = 1;
+					}
+					else{
+						id0 = 1;
+						id1 = 0;
+					}
+						
+					checkedClauses[link.clauses[0].id] = {"clause":link.clauses[0],"truth"};
+					if(checkedClauses[link.clauses[0].id].truth != link.clauses[0].truth){
+						nextClauses.push(link.clauses[0]);
+					}
+					console.log("Checking second 'and' link origin clause");
+					if(link.clauses[1].id in checkedClauses){
+						if(checkedClauses[link.clauses[1].id].truth != true){
+							console.log("Should be breaking");
+							return {"status":"error"};
+						}
+					}
+					checkedClauses[link.clauses[1].id] = {"clause":link.clauses[1],"truth"};
+					if(checkedClauses[link.clauses[1].id].truth != link.clauses[1].truth){
+						nextClauses.push(link.clauses[1]);
+					}
+					
+				}	
+			}
+		}
 	}
 	console.log("Next clauses: ", nextClauses); 
 	for(let i = 0; i < nextClauses.length; i++){
